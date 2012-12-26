@@ -30,7 +30,7 @@ template "/etc/postgresql/#{pg_version}/main/pg_ctl.conf" do
 end
 
 # pg_hba
-template node["postgresql"]["hba_file"] do
+template "/etc/postgresql/#{pg_version}/main/pg_hba.conf" do
   source "pg_hba.conf.erb"
   owner  "postgres"
   group  "postgres"
@@ -39,7 +39,7 @@ template node["postgresql"]["hba_file"] do
 end
 
 # pg_ident
-template node["postgresql"]["ident_file"] do
+template "/etc/postgresql/#{pg_version}/main/pg_ident.conf" do
   source "pg_ident.conf.erb"
   owner  "postgres"
   group  "postgres"

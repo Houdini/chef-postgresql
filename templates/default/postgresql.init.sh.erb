@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+# Example init script, this can be used with nginx, too,
+# since nginx and unicorn accept the same signals
+
+# Feel free to change any of the following variables for your app:
+TIMEOUT=${TIMEOUT-60}
+PID=<%= @pid_file %>
+CMD="<%= @cmd %>"
+RUN_USER=<%= @run_user %>
+# INIT_CONF=$APP_ROOT/config/init.conf
+action="$1"
+set -u
+
+
+# stop default postgresql server
+if [ -f "/var/run/postgresql/<%= @pg_version %>-main.pid" ]; then
+  OLD_PID=`cat /var/run/postgresql/<%= @pg_version %>-main.pid`
+  if [ -f /proc/$OLD_PID/exe ]; then
+    kill -9 $OLD_PID
+  fi
+fi
+
+
+case $action in
+start)
+  su -c "<%= @cmd %> start" - <%= @run_user %> > /dev/null || exit 0
+	;;
+stop)
+  su -c "<%= @cmd %> stop" - <%= @run_user %> > /dev/null || exit 0
+	;;
+status)
+  su -c "$CMD $action" - $RUN_USER
+  ;;
+restart|reload)
+  su -c "$CMD $action" - $RUN_USER
+	;;
+*)
+	echo >&2 "Usage: $0 <start|stop|restart>"
+	exit 1
+	;;
+esac

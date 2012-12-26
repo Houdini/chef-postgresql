@@ -5,4 +5,6 @@
 
 require_recipe "postgresql"
 
-package "postgresql-client-#{node["postgresql"]["version"]}"
+pg_version = node["postgresql"]["version"]
+package "postgresql-client-#{pg_version}"
+package "postgresql-server-dev-#{pg_version}"
